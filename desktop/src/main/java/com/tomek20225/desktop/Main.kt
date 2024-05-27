@@ -19,7 +19,7 @@ class Main : ApplicationAdapter() {
 
 fun main() {
     val config = Lwjgl3ApplicationConfiguration().apply {
-        setTitle("My 2D Desktop Game")
+        setTitle("Space Invaders")
         setWindowedMode(800, 600)
         setForegroundFPS(60)
     }
