@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Space Invaders"
-include(":app")
+rootProject.name = "Space invaders"
+include(":desktop")
