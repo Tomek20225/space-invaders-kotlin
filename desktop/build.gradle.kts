@@ -14,6 +14,7 @@ dependencies {
     implementation("com.badlogicgames.gdx:gdx:1.10.0")
     implementation("com.badlogicgames.gdx:gdx-backend-lwjgl3:1.10.0")
     implementation("com.badlogicgames.gdx:gdx-platform:1.10.0:natives-desktop")
+    implementation("com.badlogicgames.gdx:gdx-freetype:3.3.0")
 
     // LWJGL dependencies
     implementation("org.lwjgl:lwjgl:3.3.0")

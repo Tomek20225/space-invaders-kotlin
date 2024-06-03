@@ -1,14 +1,19 @@
 package com.tomek20225.desktop
 
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.math.Rectangle
-import com.badlogic.gdx.math.Vector2
+class Floor(xF: Float, yF: Float, w: Int) : PieceCollection(xF, yF, w / 2, 1) {
+    init {
+        for (y in 0 until super.h) {
+            for (x in 0 until super.w) {
+                super.pieces[y][x] = true
+            }
+        }
+    }
 
-class Floor(private val texture: Texture, position: Vector2) {
-    val bounds: Rectangle = Rectangle(position.x, position.y, texture.width.toFloat(), texture.height.toFloat())
-
-    fun draw(batch: SpriteBatch) {
-        batch.draw(texture, bounds.x, bounds.y)
+    fun fillGaps() {
+        for (i in super.pieces[0].indices) {
+            if (i % 3 == 0) {
+                super.pieces[0][i] = true
+            }
+        }
     }
 }

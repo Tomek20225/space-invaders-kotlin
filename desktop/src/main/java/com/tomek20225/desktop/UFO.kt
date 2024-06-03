@@ -1,18 +1,14 @@
 package com.tomek20225.desktop
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.math.Vector2
 
-class UFO(private val texture: Texture, position: Vector2, private val speed: Float) {
-    var position: Vector2 = position
-        private set
+class UFO(
+    img: Texture
+) : Invader(-50f, 86f, 48, 21, img, img, 200) {
 
-    fun update(delta: Float) {
-        position.x += speed * delta
-    }
-
-    fun draw(batch: SpriteBatch) {
-        batch.draw(texture, position.x, position.y)
+    fun isOutOfBounds(): Boolean {
+        if (x() > Gdx.graphics.width) println("[Game] UFO flew away!")
+        return x() > Gdx.graphics.width
     }
 }
