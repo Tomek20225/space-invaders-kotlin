@@ -6,14 +6,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
 class Player(private val img: Texture) {
     private var x: Float = (Gdx.graphics.width / 2 - 13).toFloat()
-    private val y: Float = (Gdx.graphics.height - 88).toFloat()
+    private val y: Float = 88f
     private val w: Int = 26
     private val h: Int = 16
     private val speed: Float = 2.5f
 
     fun x(): Float = this.x
     fun y(): Float = this.y
-
     fun show(batch: SpriteBatch) {
         batch.draw(this.img, this.x, this.y, this.w.toFloat(), this.h.toFloat())
     }

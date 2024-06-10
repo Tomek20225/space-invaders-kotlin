@@ -6,7 +6,8 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration
 fun main() {
     val config = Lwjgl3ApplicationConfiguration().apply {
         setTitle("Space Invaders")
-        setWindowedMode(800, 600)
+        setWindowedMode(448, 512)
+        useVsync(true)
         setForegroundFPS(60)
     }
     Lwjgl3Application(Game(), config)

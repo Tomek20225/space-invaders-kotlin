@@ -53,6 +53,8 @@ class Game : ApplicationAdapter() {
 
         // Load textures
         playerTexture = Texture(Gdx.files.internal("player.png"))
+        playerTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+
         playerBulletImg = Texture(Gdx.files.internal("bullet.png"))
         playerBulletImgFail = Texture(Gdx.files.internal("bullet.png"))
         playerBulletImgSuccess = Texture(Gdx.files.internal("bullet.png"))
@@ -102,6 +104,7 @@ class Game : ApplicationAdapter() {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
         batch.begin()
+
         if (isOver) {
             showGameOver()
         } else if (isStarted) {
@@ -109,6 +112,7 @@ class Game : ApplicationAdapter() {
         } else {
             showMenu()
         }
+
         batch.end()
     }
 
@@ -117,13 +121,12 @@ class Game : ApplicationAdapter() {
             setMovement(keycode, true)
         } else if (isOver) {
             if (keycode == Input.Keys.NUM_1) {
-                game = Game()
-                game.create()
+                start("SINGLEPLAYER")
             }
         } else {
             when (keycode) {
-                Input.Keys.NUM_1 -> game.start("SINGLEPLAYER")
-                Input.Keys.NUM_2 -> game.start("MULTIPLAYER")
+                Input.Keys.NUM_1 -> start("SINGLEPLAYER")
+                Input.Keys.NUM_2 -> start("MULTIPLAYER")
             }
         }
     }
@@ -222,7 +225,6 @@ class Game : ApplicationAdapter() {
     }
 
     private fun showFooter() {
-        batch.begin()
         font.color = com.badlogic.gdx.graphics.Color.WHITE
 
         val textY = (Gdx.graphics.height - 44 + 4).toFloat()
@@ -245,8 +247,6 @@ class Game : ApplicationAdapter() {
                 batch.draw(playerTexture, xLivesBegin + (i * 26) + (i * 4), textY, 26f, 16f)
             }
         }
-
-        batch.end()
     }
 
     private fun showSimplifiedFooter() {
@@ -362,7 +362,7 @@ class Game : ApplicationAdapter() {
         isStarted = false
     }
 
-    private fun start(mode: String) {
+    fun start(mode: String) {
         this.mode = mode
         this.isStarted = true
 
@@ -370,6 +370,29 @@ class Game : ApplicationAdapter() {
         players = arrayOfNulls(2)
         playerBullets = arrayOf(arrayOfNulls<Bullet>(1), arrayOfNulls<Bullet>(1))
         enemyBullets = arrayOfNulls(3)
+
+        // Initialize textures if not already initialized
+        if (!::playerTexture.isInitialized) {
+            playerTexture = Texture(Gdx.files.internal("player.png"))
+        }
+        if (!::playerBulletImg.isInitialized) {
+            playerBulletImg = Texture(Gdx.files.internal("bullet.png"))
+        }
+        if (!::playerBulletImgFail.isInitialized) {
+            playerBulletImgFail = Texture(Gdx.files.internal("bullet.png"))
+        }
+        if (!::playerBulletImgSuccess.isInitialized) {
+            playerBulletImgSuccess = Texture(Gdx.files.internal("bullet.png"))
+        }
+        if (!::enemyBulletImg.isInitialized) {
+            enemyBulletImg = Texture(Gdx.files.internal("bullet.png"))
+        }
+        if (!::enemyBulletImgFail.isInitialized) {
+            enemyBulletImgFail = Texture(Gdx.files.internal("bullet.png"))
+        }
+        if (!::enemyBulletImgSuccess.isInitialized) {
+            enemyBulletImgSuccess = Texture(Gdx.files.internal("bullet.png"))
+        }
 
         setupLevel()
     }
