@@ -4,7 +4,16 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
-class EnemyPlane(level: Int) {
+class EnemyPlane(
+    level: Int,
+    private val squidImg1: Texture,
+    private val squidImg2: Texture,
+    private val crabImg1: Texture,
+    private val crabImg2: Texture,
+    private val octopusImg1: Texture,
+    private val octopusImg2: Texture,
+    private val ufoImg: Texture
+) {
     private val rows: Int = 5
     private val cols: Int = 11
     private var invaderCount: Int = rows * cols
@@ -25,14 +34,6 @@ class EnemyPlane(level: Int) {
     private var ufo: UFO? = null
     private val ufoProbability: Float = 0.000324f
     private val ufoSpeed: Float = 1.5f
-
-    private val squidImg1 = Texture("squid1.png")
-    private val squidImg2 = Texture("squid2.png")
-    private val crabImg1 = Texture("crab1.png")
-    private val crabImg2 = Texture("crab2.png")
-    private val octopusImg1 = Texture("octopus1.png")
-    private val octopusImg2 = Texture("octopus2.png")
-    private val ufoImg = Texture("ufo.png")
 
     init {
         for (y in 0 until rows) {

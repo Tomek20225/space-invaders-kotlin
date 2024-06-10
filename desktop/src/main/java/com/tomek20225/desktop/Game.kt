@@ -2,6 +2,7 @@ package com.tomek20225.desktop
 
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.graphics.GL20
@@ -45,29 +46,20 @@ class Game : ApplicationAdapter() {
     private lateinit var enemyBulletImg: Texture
     private lateinit var enemyBulletImgFail: Texture
     private lateinit var enemyBulletImgSuccess: Texture
+    private lateinit var squidImg1: Texture
+    private lateinit var squidImg2: Texture
+    private lateinit var crabImg1: Texture
+    private lateinit var crabImg2: Texture
+    private lateinit var octopusImg1: Texture
+    private lateinit var octopusImg2: Texture
+    private lateinit var ufoImg: Texture
 
     override fun create() {
         // Setup renderers
         batch = SpriteBatch()
         shapeRenderer = ShapeRenderer()
-
-        // Load textures
-        playerTexture = Texture(Gdx.files.internal("player.png"))
-        playerTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-
-        playerBulletImg = Texture(Gdx.files.internal("bullet.png"))
-        playerBulletImgFail = Texture(Gdx.files.internal("bullet.png"))
-        playerBulletImgSuccess = Texture(Gdx.files.internal("bullet.png"))
-        enemyBulletImg = Texture(Gdx.files.internal("bullet.png"))
-        enemyBulletImgFail = Texture(Gdx.files.internal("bullet.png"))
-        enemyBulletImgSuccess = Texture(Gdx.files.internal("bullet.png"))
-
-        // Load font
-        val generator = FreeTypeFontGenerator(Gdx.files.internal("space_invaders.ttf"))
-        val parameter = FreeTypeFontGenerator.FreeTypeFontParameter()
-        parameter.size = 16
-        font = generator.generateFont(parameter)
-        generator.dispose()
+        loadTextures()
+        loadFont()
 
         try {
             highestScore = readHighestScore()
@@ -82,7 +74,7 @@ class Game : ApplicationAdapter() {
 
         // Initialize players and bullets arrays
         players = arrayOfNulls(2)
-        playerBullets = arrayOf(arrayOfNulls<Bullet>(1), arrayOfNulls<Bullet>(1))
+        playerBullets = arrayOf(arrayOfNulls(1), arrayOfNulls(1))
         enemyBullets = arrayOfNulls(3)
 
         setupLevel()
@@ -114,6 +106,51 @@ class Game : ApplicationAdapter() {
         }
 
         batch.end()
+    }
+
+    private fun loadTextures() {
+        val bulletTexture = Texture(Gdx.files.internal("bullet.png")).apply {
+            setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+        }
+        playerTexture = bulletTexture
+        playerBulletImg = bulletTexture
+        playerBulletImgFail = bulletTexture
+        playerBulletImgSuccess = bulletTexture
+        enemyBulletImg = bulletTexture
+        enemyBulletImgFail = bulletTexture
+        enemyBulletImgSuccess = bulletTexture
+
+        squidImg1 = Texture(Gdx.files.internal("squid1.png")).apply {
+            setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+        }
+        squidImg2 = Texture(Gdx.files.internal("squid2.png")).apply {
+            setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+        }
+        crabImg1 = Texture(Gdx.files.internal("crab1.png")).apply {
+            setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+        }
+        crabImg2 = Texture(Gdx.files.internal("crab2.png")).apply {
+            setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+        }
+        octopusImg1 = Texture(Gdx.files.internal("octopus1.png")).apply {
+            setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+        }
+        octopusImg2 = Texture(Gdx.files.internal("octopus2.png")).apply {
+            setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+        }
+        ufoImg = Texture(Gdx.files.internal("ufo.png")).apply {
+            setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+        }
+    }
+
+    private fun loadFont() {
+        val generator = FreeTypeFontGenerator(Gdx.files.internal("space_invaders.ttf"))
+        val parameter = FreeTypeFontGenerator.FreeTypeFontParameter().apply {
+            size = 16
+            color = Color.WHITE
+        }
+        font = generator.generateFont(parameter)
+        generator.dispose()
     }
 
     private fun handleKeyDown(keycode: Int) {
@@ -190,7 +227,7 @@ class Game : ApplicationAdapter() {
             players[1] = Player(playerTexture)
         }
 
-        plane = EnemyPlane(level)
+        plane = EnemyPlane(level, squidImg1, squidImg2, crabImg1, crabImg2, octopusImg1, octopusImg2, ufoImg)
 
         val barrierWidth = 44
         val barriersDist = (Gdx.graphics.width - (4 * barrierWidth)) / 5f
@@ -210,34 +247,34 @@ class Game : ApplicationAdapter() {
     }
 
     private fun showHeader() {
-        font.color = com.badlogic.gdx.graphics.Color.WHITE
+        font.color = Color.WHITE
 
         font.draw(batch, "SCORE<1>", 28f, (Gdx.graphics.height - 24).toFloat())
         font.draw(batch, playerScores[0].toString(), 58f, (Gdx.graphics.height - 54).toFloat())
 
-        font.draw(batch, "HI-SCORE", (Gdx.graphics.width / 2).toFloat(), (Gdx.graphics.height - 24).toFloat())
-        font.draw(batch, highestScore.toString(), (Gdx.graphics.width / 2).toFloat(), (Gdx.graphics.height - 54).toFloat())
+        font.draw(batch, "HI-SCORE", (Gdx.graphics.width / 2).toFloat() - 48f, (Gdx.graphics.height - 24).toFloat())
+        font.draw(batch, highestScore.toString(), (Gdx.graphics.width / 2).toFloat() - 24f, (Gdx.graphics.height - 54).toFloat())
 
-        font.draw(batch, "SCORE<2>", (Gdx.graphics.width - 28).toFloat(), (Gdx.graphics.height - 24).toFloat())
+        font.draw(batch, "SCORE<2>", (Gdx.graphics.width - 28).toFloat() - 96f, (Gdx.graphics.height - 24).toFloat())
         if (mode == "MULTIPLAYER" || !isStarted) {
-            font.draw(batch, playerScores[1].toString(), (Gdx.graphics.width - 58).toFloat(), (Gdx.graphics.height - 54).toFloat())
+            font.draw(batch, playerScores[1].toString(), (Gdx.graphics.width - 58).toFloat() - 32f, (Gdx.graphics.height - 54).toFloat())
         }
     }
 
     private fun showFooter() {
-        font.color = com.badlogic.gdx.graphics.Color.WHITE
+        font.color = Color.WHITE
 
-        val textY = (Gdx.graphics.height - 44 + 4).toFloat()
+        val textY = (44 + 4).toFloat() - 16f
 
         font.draw(batch, playerLives[0].toString(), 28f, textY)
-        font.draw(batch, "CREDIT  00", (Gdx.graphics.width - 28).toFloat(), textY)
+        font.draw(batch, "CREDIT  00", (Gdx.graphics.width - 28).toFloat() - 96f, textY)
 
         floor.fillGaps()
         floor.show(shapeRenderer)
 
         var xLivesBegin = (28 + 22).toFloat()
         for (i in 0 until if (playerLives[0] - 1 > 3) 3 else playerLives[0] - 1) {
-            batch.draw(playerTexture, xLivesBegin + (i * 26) + (i * 4), textY, 26f, 16f)
+            batch.draw(playerTexture, xLivesBegin + (i * 26) + (i * 4), textY, 26f, 0f)
         }
 
         if (mode == "MULTIPLAYER") {
@@ -250,15 +287,13 @@ class Game : ApplicationAdapter() {
     }
 
     private fun showSimplifiedFooter() {
-        font.color = com.badlogic.gdx.graphics.Color.WHITE
-
-        val textY = (Gdx.graphics.height - 44 + 4).toFloat()
-
-        font.draw(batch, "CREDIT  01", (Gdx.graphics.width - 28).toFloat(), textY)
+        font.color = Color.WHITE
+        val textY = (44 + 4).toFloat()
+        font.draw(batch, "CREDIT  01", (Gdx.graphics.width - 28).toFloat() - 96f, textY)
     }
 
     private fun showOptions() {
-        font.color = com.badlogic.gdx.graphics.Color.WHITE
+        font.color = Color.WHITE
 
         font.draw(batch, "PLAY", (Gdx.graphics.width / 2).toFloat(), 130f)
         font.draw(batch, "SPACE    INVADERS", (Gdx.graphics.width / 2).toFloat(), 176f)
@@ -272,10 +307,10 @@ class Game : ApplicationAdapter() {
 
         font.draw(batch, "GAME OVER", Gdx.graphics.width / 2f, 131f)
 
-        font.color = com.badlogic.gdx.graphics.Color.RED
+        font.color = Color.RED
         font.draw(batch, "GAME OVER", Gdx.graphics.width / 2f, 130f)
 
-        font.color = com.badlogic.gdx.graphics.Color.WHITE
+        font.color = Color.WHITE
         font.draw(batch, "RESTART GAME -- PRESS 1", Gdx.graphics.width / 2f, 238f)
     }
 
@@ -339,18 +374,6 @@ class Game : ApplicationAdapter() {
         setupLevel()
     }
 
-    fun isPaused(): Boolean {
-        return isPaused
-    }
-
-    fun isStarted(): Boolean {
-        return isStarted
-    }
-
-    fun isOver(): Boolean {
-        return isOver
-    }
-
     private fun gameOver() {
         Thread.sleep(2000)
         isOver = true
@@ -358,37 +381,17 @@ class Game : ApplicationAdapter() {
         isStarted = false
     }
 
-    fun start(mode: String) {
+    private fun start(mode: String) {
         this.mode = mode
         this.isStarted = true
 
         // Reinitialize players and bullets arrays
         players = arrayOfNulls(2)
-        playerBullets = arrayOf(arrayOfNulls<Bullet>(1), arrayOfNulls<Bullet>(1))
+        playerBullets = arrayOf(arrayOfNulls(1), arrayOfNulls(1))
         enemyBullets = arrayOfNulls(3)
 
-        // Initialize textures if not already initialized
-        if (!::playerTexture.isInitialized) {
-            playerTexture = Texture(Gdx.files.internal("player.png"))
-        }
-        if (!::playerBulletImg.isInitialized) {
-            playerBulletImg = Texture(Gdx.files.internal("bullet.png"))
-        }
-        if (!::playerBulletImgFail.isInitialized) {
-            playerBulletImgFail = Texture(Gdx.files.internal("bullet.png"))
-        }
-        if (!::playerBulletImgSuccess.isInitialized) {
-            playerBulletImgSuccess = Texture(Gdx.files.internal("bullet.png"))
-        }
-        if (!::enemyBulletImg.isInitialized) {
-            enemyBulletImg = Texture(Gdx.files.internal("bullet.png"))
-        }
-        if (!::enemyBulletImgFail.isInitialized) {
-            enemyBulletImgFail = Texture(Gdx.files.internal("bullet.png"))
-        }
-        if (!::enemyBulletImgSuccess.isInitialized) {
-            enemyBulletImgSuccess = Texture(Gdx.files.internal("bullet.png"))
-        }
+        loadTextures()
+        loadFont()
 
         setupLevel()
     }

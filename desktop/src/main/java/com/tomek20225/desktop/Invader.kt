@@ -20,7 +20,7 @@ open class Invader(
     private val pxDiff: Int = 2
 
     init {
-        this.y = Gdx.graphics.height - y - h // Adjust y-coordinate for LibGDX
+        this.y = Gdx.graphics.height - y - h
     }
 
     fun x(): Float = x.toFloat()
@@ -58,6 +58,6 @@ open class Invader(
     }
 
     fun moveDown(dist: Int) {
-        y -= dist // Adjusting to move down correctly in LibGDX
+        y -= dist
     }
 }
