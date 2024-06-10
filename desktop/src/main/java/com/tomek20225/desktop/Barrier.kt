@@ -57,7 +57,7 @@ class Barrier(xC: Float, yC: Float) : PieceCollection(xC, yC, 22, 16) {
         return false
     }
 
-    fun isHit(invader: Invader): Boolean {
+    private fun isHit(invader: Invader): Boolean {
         if (this.isDestroyed()) {
             return false
         }

@@ -9,10 +9,15 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/android" />
+            <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/desktop" />
           </set>
         </option>
+        <option name="resolveExternalAnnotations" value="false" />
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/core" />
+        <option name="gradleJvm" value="#GRADLE_LOCAL_JAVA_HOME" />
         <option name="resolveExternalAnnotations" value="false" />
       </GradleProjectSettings>
     </option>

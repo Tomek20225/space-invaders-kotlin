@@ -2,6 +2,7 @@ package com.tomek20225.desktop
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
 class EnemyPlane(level: Int) {
     private val rows: Int = 5
@@ -31,7 +32,7 @@ class EnemyPlane(level: Int) {
     private val crabImg2 = Texture("crab2.png")
     private val octopusImg1 = Texture("octopus1.png")
     private val octopusImg2 = Texture("octopus2.png")
-    private val ufoImg = Texture("ufo1.png")
+    private val ufoImg = Texture("ufo.png")
 
     init {
         for (y in 0 until rows) {
@@ -69,7 +70,7 @@ class EnemyPlane(level: Int) {
         return xEnd
     }
 
-    private fun getLastInvaderY(): Float {
+    fun getLastInvaderY(): Float {
         for (y in rows - 1 downTo 0) {
             for (x in cols - 1 downTo 0) {
                 if (invaders[y][x] != null) {
@@ -148,5 +149,59 @@ class EnemyPlane(level: Int) {
             }
         }
         return pointsGained
+    }
+
+    fun show(batch: SpriteBatch) {
+        if (this.isEmpty()) return
+
+        for (y in 0 until this.rows) {
+            for (x in 0 until this.cols) {
+                if (this.invaders[y][x] != null) {
+                    this.invaders[y][x]?.show(batch)
+                }
+            }
+        }
+
+        ufo?.show(batch)
+    }
+
+    fun getBottomInvaders(): Array<Invader?> {
+        val bottomInvaders = Array<Invader?>(this.cols) { null }
+
+        for (x in 0 until this.cols) {
+            for (y in this.rows - 1 downTo 0) {
+                if (this.invaders[y][x] != null) {
+                    bottomInvaders[x] = this.invaders[y][x]
+                    break
+                }
+            }
+        }
+
+        return bottomInvaders
+    }
+
+    fun getRandomBottomInvader(): Invader? {
+        val bottomInvaders = getBottomInvaders()
+        var bottomInvadersLeft = 0
+
+        for (invader in bottomInvaders) {
+            if (invader != null) {
+                bottomInvadersLeft++
+            }
+        }
+
+        val randomInvaderIndex = kotlin.math.floor(Math.random() * bottomInvadersLeft).toInt()
+        var z = 0
+
+        for (invader in bottomInvaders) {
+            if (invader != null) {
+                if (z == randomInvaderIndex && invader.y() < (Gdx.graphics.height - 102)) {
+                    return invader
+                }
+                z++
+            }
+        }
+
+        return null
     }
 }

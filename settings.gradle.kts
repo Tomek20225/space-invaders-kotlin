@@ -20,5 +20,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Space invaders"
+include(":core")
 include(":desktop")
-include(":android")
