@@ -207,7 +207,6 @@ class Game : ApplicationAdapter() {
     }
 
     private fun showHeader() {
-        batch.begin()
         font.color = com.badlogic.gdx.graphics.Color.WHITE
 
         font.draw(batch, "SCORE<1>", 28f, (Gdx.graphics.height - 24).toFloat())
@@ -220,8 +219,6 @@ class Game : ApplicationAdapter() {
         if (mode == "MULTIPLAYER" || !isStarted) {
             font.draw(batch, playerScores[1].toString(), (Gdx.graphics.width - 58).toFloat(), (Gdx.graphics.height - 54).toFloat())
         }
-
-        batch.end()
     }
 
     private fun showFooter() {
@@ -253,18 +250,14 @@ class Game : ApplicationAdapter() {
     }
 
     private fun showSimplifiedFooter() {
-        batch.begin()
         font.color = com.badlogic.gdx.graphics.Color.WHITE
 
         val textY = (Gdx.graphics.height - 44 + 4).toFloat()
 
         font.draw(batch, "CREDIT  01", (Gdx.graphics.width - 28).toFloat(), textY)
-
-        batch.end()
     }
 
     private fun showOptions() {
-        batch.begin()
         font.color = com.badlogic.gdx.graphics.Color.WHITE
 
         font.draw(batch, "PLAY", (Gdx.graphics.width / 2).toFloat(), 130f)
@@ -272,8 +265,6 @@ class Game : ApplicationAdapter() {
         font.draw(batch, "1 PLAYER -- PRESS 1", (Gdx.graphics.width / 2).toFloat(), 238f)
         font.draw(batch, "2 PLAYERS -- PRESS 2", (Gdx.graphics.width / 2).toFloat(), 270f)
         font.draw(batch, "BY TOMEK20225", (Gdx.graphics.width / 2).toFloat(), 332f)
-
-        batch.end()
     }
 
     private fun showGameOver() {
@@ -374,6 +365,12 @@ class Game : ApplicationAdapter() {
     private fun start(mode: String) {
         this.mode = mode
         this.isStarted = true
+
+        // Reinitialize players and bullets arrays
+        players = arrayOfNulls(2)
+        playerBullets = arrayOf(arrayOfNulls<Bullet>(1), arrayOfNulls<Bullet>(1))
+        enemyBullets = arrayOfNulls(3)
+
         setupLevel()
     }
 
