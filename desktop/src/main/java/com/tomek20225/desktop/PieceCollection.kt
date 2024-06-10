@@ -1,5 +1,6 @@
 package com.tomek20225.desktop
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import kotlin.random.Random
 
@@ -13,6 +14,9 @@ open class PieceCollection(
     val pieces: Array<BooleanArray> = Array(h) { BooleanArray(w) }
     private val fill = com.badlogic.gdx.graphics.Color(51 / 255f, 183 / 255f, 60 / 255f, 1f)
 
+    init {
+        this.y = Gdx.graphics.height - y - h * pxScale
+    }
     fun show(shapeRenderer: ShapeRenderer) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled)
         shapeRenderer.color = fill

@@ -1,5 +1,6 @@
 package com.tomek20225.desktop
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import kotlin.math.floor
@@ -21,6 +22,8 @@ class Bullet(
     init {
         if (this.type == "PLAYER") {
             this.x += 12
+        } else {
+            this.y = Gdx.graphics.height - y
         }
     }
 
@@ -59,13 +62,13 @@ class Bullet(
 
     fun move() {
         if (this.type == "PLAYER") {
-            this.y -= this.playerBulletSpeed
-            if (this.y < 80) {
+            this.y += this.playerBulletSpeed
+            if (this.y > Gdx.graphics.height) {
                 this.outOfBounds = true
             }
         } else if (this.type == "ENEMY") {
-            this.y += this.enemyBulletSpeed
-            if (this.y > height() - 44) {
+            this.y -= this.enemyBulletSpeed
+            if (this.y < 0) {
                 this.outOfBounds = true
             }
         }

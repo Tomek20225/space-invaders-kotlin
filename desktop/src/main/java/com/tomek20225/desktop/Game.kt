@@ -270,7 +270,6 @@ class Game : ApplicationAdapter() {
     private fun showGameOver() {
         showHeader()
 
-        batch.begin()
         font.draw(batch, "GAME OVER", Gdx.graphics.width / 2f, 131f)
 
         font.color = com.badlogic.gdx.graphics.Color.RED
@@ -278,7 +277,6 @@ class Game : ApplicationAdapter() {
 
         font.color = com.badlogic.gdx.graphics.Color.WHITE
         font.draw(batch, "RESTART GAME -- PRESS 1", Gdx.graphics.width / 2f, 238f)
-        batch.end()
     }
 
     private fun removeBullets() {
@@ -308,9 +306,7 @@ class Game : ApplicationAdapter() {
             println("[Game] Respawning player ${index + 1}. Lives left: ${playerLives[index]}")
             Thread.sleep(1500)
 
-            batch.begin()
             players[index]?.show(batch)
-            batch.end()
 
             removeBullets()
 

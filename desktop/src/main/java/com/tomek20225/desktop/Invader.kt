@@ -1,5 +1,6 @@
 package com.tomek20225.desktop
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import kotlin.math.abs
@@ -17,6 +18,10 @@ open class Invader(
     private var x: Int = floor(realX).toInt()
     private var state: Int = 0
     private val pxDiff: Int = 2
+
+    init {
+        this.y = Gdx.graphics.height - y - h // Adjust y-coordinate for LibGDX
+    }
 
     fun x(): Float = x.toFloat()
 
@@ -53,6 +58,6 @@ open class Invader(
     }
 
     fun moveDown(dist: Int) {
-        y += dist
+        y -= dist // Adjusting to move down correctly in LibGDX
     }
 }

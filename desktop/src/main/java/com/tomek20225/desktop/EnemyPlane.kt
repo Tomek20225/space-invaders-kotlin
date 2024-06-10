@@ -16,7 +16,7 @@ class EnemyPlane(level: Int) {
 
     private var xBegin: Float = (Gdx.graphics.width - (cols * invaderSize)) / 2f
     private var xEnd: Float = xBegin + (invaderSize * cols)
-    private var yBegin: Float = 132f + invaderSize * ((level - 1) % 4)
+    private var yBegin: Float = Gdx.graphics.height - (132f + invaderSize * ((level - 1) % 4) + rows * invaderSize)
     private var yEnd: Float = yBegin + (rows * invaderSize)
 
     private val startDirection: String = "RIGHT"
@@ -92,12 +92,14 @@ class EnemyPlane(level: Int) {
         xEnd += speed
         if (getFirstInvaderX() <= 4) {
             currentDirection = "RIGHT"
-            yBegin += invaderSize
-            yEnd += invaderSize
+            yBegin -= invaderSize
+            yEnd -= invaderSize
+            moveInvadersDown()
         } else if (getLastInvaderX() >= Gdx.graphics.width - 4) {
             currentDirection = "LEFT"
-            yBegin += invaderSize
-            yEnd += invaderSize
+            yBegin -= invaderSize
+            yEnd -= invaderSize
+            moveInvadersDown()
         }
         if (ufo == null) {
             if (Math.random() <= ufoProbability) {
@@ -109,6 +111,14 @@ class EnemyPlane(level: Int) {
                 ufo = null
             } else {
                 ufo!!.move("RIGHT", ufoSpeed)
+            }
+        }
+    }
+
+    private fun moveInvadersDown() {
+        for (y in 0 until rows) {
+            for (x in 0 until cols) {
+                invaders[y][x]?.moveDown(invaderSize)
             }
         }
     }
