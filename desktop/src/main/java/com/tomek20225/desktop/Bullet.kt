@@ -32,22 +32,27 @@ class Bullet(
     fun type(): String = this.type
 
     fun explode(batch: SpriteBatch) {
+        batch.begin()
         if (this.type == "PLAYER") {
             batch.draw(imgSuccess, this.x - 12, this.y - 12, 26f, 16f)
         } else if (this.type == "ENEMY") {
             batch.draw(imgSuccess, this.x, this.y, 26f, 16f)
         }
+        batch.end()
     }
 
     fun explodeFail(batch: SpriteBatch, collided: Boolean = false) {
+        batch.begin()
         if (this.type == "PLAYER") {
             batch.draw(imgFail, this.x, this.y, 30f, 16f)
         } else if (collided || this.type == "ENEMY") {
             batch.draw(imgFail, this.x, this.y - 16, 30f, 16f)
         }
+        batch.end()
     }
 
     fun show(batch: SpriteBatch) {
+        batch.begin()
         if (!this.isOutOfBounds()) {
             if (this.type == "PLAYER") {
                 batch.draw(img, this.x, this.y, this.w.toFloat(), this.h.toFloat())
@@ -56,6 +61,7 @@ class Bullet(
                 batch.draw(img, this.x - 2, this.y + floor((this.h / 2).toDouble()).toFloat() - 1, this.w.toFloat() + 4, 2f)
             }
         }
+        batch.end()
     }
 
     fun move() {

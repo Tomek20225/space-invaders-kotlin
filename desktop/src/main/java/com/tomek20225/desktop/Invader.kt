@@ -34,8 +34,10 @@ open class Invader(
     }
 
     fun show(batch: SpriteBatch) {
+        batch.begin()
         val currentImage = if (state == 0) img0 else img1
         batch.draw(currentImage, x.toFloat(), y, w.toFloat(), h.toFloat())
+        batch.end()
     }
 
     fun move(dir: String, speed: Float) {

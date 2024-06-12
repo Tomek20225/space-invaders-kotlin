@@ -14,7 +14,9 @@ class Player(private val img: Texture) {
     fun x(): Float = this.x
     fun y(): Float = this.y
     fun show(batch: SpriteBatch) {
+        batch.begin()
         batch.draw(this.img, this.x, this.y, this.w.toFloat(), this.h.toFloat())
+        batch.end()
     }
 
     fun move(dir: String) {

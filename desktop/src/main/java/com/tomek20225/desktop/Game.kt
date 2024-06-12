@@ -94,8 +94,8 @@ class Game : ApplicationAdapter() {
 
     override fun render() {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-
-        batch.begin()
+        Gdx.gl.glEnable(GL20.GL_BLEND)
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
 
         if (isOver) {
             showGameOver()
@@ -104,53 +104,56 @@ class Game : ApplicationAdapter() {
         } else {
             showMenu()
         }
+    }
 
-        batch.end()
+    override fun dispose() {
+        batch.dispose()
+        shapeRenderer.dispose()
+        disposeTextures()
+        disposeFont()
+    }
+
+    private fun loadTexture(filePath: String): Texture {
+        val texture = Texture(Gdx.files.internal(filePath))
+        texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+        return texture
     }
 
     private fun loadTextures() {
-        val bulletTexture = Texture(Gdx.files.internal("bullet.png")).apply {
-            setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-        }
-        playerTexture = bulletTexture
-        playerBulletImg = bulletTexture
-        playerBulletImgFail = bulletTexture
-        playerBulletImgSuccess = bulletTexture
-        enemyBulletImg = bulletTexture
-        enemyBulletImgFail = bulletTexture
-        enemyBulletImgSuccess = bulletTexture
+        try {
+            playerTexture = loadTexture("player.png")
+            squidImg1 = loadTexture("squid1.png")
+            squidImg2 = loadTexture("squid2.png")
+            crabImg1 = loadTexture("crab1.png")
+            crabImg2 = loadTexture("crab2.png")
+            octopusImg1 = loadTexture("octopus1.png")
+            octopusImg2 = loadTexture("octopus2.png")
+            ufoImg = loadTexture("ufo.png")
 
-        squidImg1 = Texture(Gdx.files.internal("squid1.png")).apply {
-            setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-        }
-        squidImg2 = Texture(Gdx.files.internal("squid2.png")).apply {
-            setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-        }
-        crabImg1 = Texture(Gdx.files.internal("crab1.png")).apply {
-            setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-        }
-        crabImg2 = Texture(Gdx.files.internal("crab2.png")).apply {
-            setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-        }
-        octopusImg1 = Texture(Gdx.files.internal("octopus1.png")).apply {
-            setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-        }
-        octopusImg2 = Texture(Gdx.files.internal("octopus2.png")).apply {
-            setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-        }
-        ufoImg = Texture(Gdx.files.internal("ufo.png")).apply {
-            setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+            val bulletTexture = loadTexture("bullet.png")
+            playerBulletImg = bulletTexture
+            playerBulletImgFail = bulletTexture
+            playerBulletImgSuccess = bulletTexture
+            enemyBulletImg = bulletTexture
+            enemyBulletImgFail = bulletTexture
+            enemyBulletImgSuccess = bulletTexture
+        } catch (e: Exception) {
+            println("Error loading textures: ${e.message}")
         }
     }
 
     private fun loadFont() {
-        val generator = FreeTypeFontGenerator(Gdx.files.internal("space_invaders.ttf"))
-        val parameter = FreeTypeFontGenerator.FreeTypeFontParameter().apply {
-            size = 16
-            color = Color.WHITE
+        try {
+            val generator = FreeTypeFontGenerator(Gdx.files.internal("space_invaders.ttf"))
+            val parameter = FreeTypeFontGenerator.FreeTypeFontParameter().apply {
+                size = 16
+                color = Color.WHITE
+            }
+            font = generator.generateFont(parameter)
+            generator.dispose()
+        } catch (e: Exception) {
+            println("Error loading font: ${e.message}")
         }
-        font = generator.generateFont(parameter)
-        generator.dispose()
     }
 
     private fun handleKeyDown(keycode: Int) {
@@ -246,6 +249,7 @@ class Game : ApplicationAdapter() {
     }
 
     private fun showHeader() {
+        batch.begin()
         font.color = Color.WHITE
 
         font.draw(batch, "SCORE<1>", 28f, (Gdx.graphics.height - 24).toFloat())
@@ -258,52 +262,58 @@ class Game : ApplicationAdapter() {
         if (isMultiplayer() || !isStarted) {
             font.draw(batch, playerScores[1].toString(), (Gdx.graphics.width - 58).toFloat() - 32f, (Gdx.graphics.height - 54).toFloat())
         }
+        batch.end()
     }
 
     private fun showFooter() {
+        batch.begin()
         font.color = Color.WHITE
-
         val textY = (44 + 4).toFloat() - 16f
 
-        font.draw(batch, playerLives[0].toString(), 28f, textY)
         font.draw(batch, "CREDIT  00", (Gdx.graphics.width - 28).toFloat() - 96f, textY)
+
+        font.draw(batch, playerLives[0].toString(), 28f, textY)
+//        var xLivesBegin = (28 + 22).toFloat()
+//        for (i in 0 until if (playerLives[0] - 1 > 3) 3 else playerLives[0] - 1) {
+//            batch.draw(playerTexture, xLivesBegin + (i * 26) + (i * 4), textY, 26f, 0f)
+//        }
+
+        if (isMultiplayer()) {
+            font.draw(batch, playerLives[1].toString(), 170f, textY)
+//            xLivesBegin = 190f
+//            for (i in 0 until if (playerLives[1] - 1 > 3) 3 else playerLives[1] - 1) {
+//                batch.draw(playerTexture, xLivesBegin + (i * 26) + (i * 4), textY, 26f, 16f)
+//            }
+        }
+        batch.end()
 
         floor.fillGaps()
         floor.show(shapeRenderer)
-
-        var xLivesBegin = (28 + 22).toFloat()
-        for (i in 0 until if (playerLives[0] - 1 > 3) 3 else playerLives[0] - 1) {
-            batch.draw(playerTexture, xLivesBegin + (i * 26) + (i * 4), textY, 26f, 0f)
-        }
-
-        if (isMultiplayer()) {
-            xLivesBegin = 190f
-            font.draw(batch, playerLives[1].toString(), 170f, textY)
-            for (i in 0 until if (playerLives[1] - 1 > 3) 3 else playerLives[1] - 1) {
-                batch.draw(playerTexture, xLivesBegin + (i * 26) + (i * 4), textY, 26f, 16f)
-            }
-        }
     }
 
     private fun showSimplifiedFooter() {
+        batch.begin()
         font.color = Color.WHITE
         val textY = (44 + 4).toFloat()
         font.draw(batch, "CREDIT  01", (Gdx.graphics.width - 28).toFloat() - 96f, textY)
+        batch.end()
     }
 
     private fun showOptions() {
+        batch.begin()
         font.color = Color.WHITE
-
         font.draw(batch, "PLAY", (Gdx.graphics.width / 2).toFloat(), 130f)
         font.draw(batch, "SPACE    INVADERS", (Gdx.graphics.width / 2).toFloat(), 176f)
         font.draw(batch, "1 PLAYER -- PRESS 1", (Gdx.graphics.width / 2).toFloat(), 238f)
         font.draw(batch, "2 PLAYERS -- PRESS 2", (Gdx.graphics.width / 2).toFloat(), 270f)
-        font.draw(batch, "BY TOMEK20225", (Gdx.graphics.width / 2).toFloat(), 332f)
+        font.draw(batch, "BY TOMASZ KAPCIA", (Gdx.graphics.width / 2).toFloat(), 332f)
+        batch.end()
     }
 
     private fun showGameOver() {
         showHeader()
 
+        batch.begin()
         font.draw(batch, "GAME OVER", Gdx.graphics.width / 2f, 131f)
 
         font.color = Color.RED
@@ -311,6 +321,7 @@ class Game : ApplicationAdapter() {
 
         font.color = Color.WHITE
         font.draw(batch, "RESTART GAME -- PRESS 1", Gdx.graphics.width / 2f, 238f)
+        batch.end()
     }
 
     private fun removeBullets() {
@@ -630,5 +641,26 @@ class Game : ApplicationAdapter() {
                 }
             }
         }
+    }
+
+    private fun disposeTextures() {
+        playerTexture.dispose()
+        playerBulletImg.dispose()
+        playerBulletImgFail.dispose()
+        playerBulletImgSuccess.dispose()
+        enemyBulletImg.dispose()
+        enemyBulletImgFail.dispose()
+        enemyBulletImgSuccess.dispose()
+        squidImg1.dispose()
+        squidImg2.dispose()
+        crabImg1.dispose()
+        crabImg2.dispose()
+        octopusImg1.dispose()
+        octopusImg2.dispose()
+        ufoImg.dispose()
+    }
+
+    private fun disposeFont() {
+        font.dispose()
     }
 }
