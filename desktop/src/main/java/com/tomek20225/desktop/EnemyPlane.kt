@@ -3,6 +3,7 @@ package com.tomek20225.desktop
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import kotlin.random.Random
 
 class EnemyPlane(
     level: Int,
@@ -25,7 +26,7 @@ class EnemyPlane(
 
     private var xBegin: Float = (Gdx.graphics.width - (cols * invaderSize)) / 2f
     private var xEnd: Float = xBegin + (invaderSize * cols)
-    private var yBegin: Float = Gdx.graphics.height - (132f + invaderSize * ((level - 1) % 4) + rows * invaderSize)
+    private var yBegin: Float = Gdx.graphics.height - ((rows - 1) * invaderSize + (invaderSize * (level - 1) % 4)).toFloat()
     private var yEnd: Float = yBegin + (rows * invaderSize)
 
     private val startDirection: String = "RIGHT"
@@ -39,7 +40,7 @@ class EnemyPlane(
         for (y in 0 until rows) {
             for (x in 0 until cols) {
                 val invaderX = xBegin + (x * invaderSize)
-                val invaderY = yBegin + (y * invaderSize)
+                val invaderY = yBegin - (y * invaderSize)
                 invaders[y][x] = when (y) {
                     0 -> Squid(invaderX, invaderY, squidImg1, squidImg2)
                     1, 2 -> Crab(invaderX, invaderY, crabImg1, crabImg2)
@@ -83,25 +84,32 @@ class EnemyPlane(
     }
 
     fun move() {
-        val speed = if (currentDirection == "LEFT") -planeSpeed else planeSpeed
-        for (y in 0 until rows) {
-            for (x in 0 until cols) {
-                invaders[y][x]?.move(currentDirection, invaderSpeed)
+        if (isEmpty()) {
+            return
+        }
+
+        var bounced = false
+        val firstInvaderX = getFirstInvaderX()
+        val lastInvaderX = getLastInvaderX()
+
+        if (currentDirection == "RIGHT" && lastInvaderX >= Gdx.graphics.width) {
+            currentDirection = "LEFT"
+            bounced = true
+        } else if (currentDirection == "LEFT" && firstInvaderX <= 0) {
+            currentDirection = "RIGHT"
+            bounced = true
+        }
+
+        if (bounced) {
+            moveInvadersDown()
+        } else {
+            for (y in 0 until rows) {
+                for (x in 0 until cols) {
+                    invaders[y][x]?.move(currentDirection, invaderSpeed)
+                }
             }
         }
-        xBegin += speed
-        xEnd += speed
-        if (getFirstInvaderX() <= 4) {
-            currentDirection = "RIGHT"
-            yBegin -= invaderSize
-            yEnd -= invaderSize
-            moveInvadersDown()
-        } else if (getLastInvaderX() >= Gdx.graphics.width - 4) {
-            currentDirection = "LEFT"
-            yBegin -= invaderSize
-            yEnd -= invaderSize
-            moveInvadersDown()
-        }
+
         if (ufo == null) {
             if (Math.random() <= ufoProbability) {
                 ufo = UFO(ufoImg)
@@ -117,7 +125,7 @@ class EnemyPlane(
     }
 
     private fun moveInvadersDown() {
-        for (y in 0 until rows) {
+        for (y in rows - 1 downTo 0) {
             for (x in 0 until cols) {
                 invaders[y][x]?.moveDown(invaderSize)
             }
@@ -125,7 +133,7 @@ class EnemyPlane(
     }
 
     fun isOnBottom(): Boolean {
-        return getLastInvaderY() > Gdx.graphics.height - 88
+        return getLastInvaderY() <= 128
     }
 
     fun isEmpty(): Boolean {
@@ -193,26 +201,9 @@ class EnemyPlane(
 
     fun getRandomBottomInvader(): Invader? {
         val bottomInvaders = getBottomInvaders()
-        var bottomInvadersLeft = 0
-
-        for (invader in bottomInvaders) {
-            if (invader != null) {
-                bottomInvadersLeft++
-            }
+        if (bottomInvaders.isEmpty()) {
+            return null
         }
-
-        val randomInvaderIndex = kotlin.math.floor(Math.random() * bottomInvadersLeft).toInt()
-        var z = 0
-
-        for (invader in bottomInvaders) {
-            if (invader != null) {
-                if (z == randomInvaderIndex && invader.y() < (Gdx.graphics.height - 102)) {
-                    return invader
-                }
-                z++
-            }
-        }
-
-        return null
+        return bottomInvaders[Random.nextInt(bottomInvaders.size)]
     }
 }

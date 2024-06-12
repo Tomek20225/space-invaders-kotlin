@@ -180,7 +180,7 @@ class Game : ApplicationAdapter() {
             Input.Keys.D -> player1Keys[1] = state
             Input.Keys.W -> player1Keys[2] = state
         }
-        if (game.mode() == "MULTIPLAYER") {
+        if (isMultiplayer()) {
             when (keycode) {
                 Input.Keys.LEFT -> player2Keys[0] = state
                 Input.Keys.RIGHT -> player2Keys[1] = state
@@ -190,9 +190,9 @@ class Game : ApplicationAdapter() {
     }
 
     private fun play(player1Keys: BooleanArray, player2Keys: BooleanArray) {
-        if (players[0] != null || (mode == "MULTIPLAYER" && players[1] != null)) {
+        if (players[0] != null || (isMultiplayer() && players[1] != null)) {
             players[0]?.show(batch)
-            if (mode == "MULTIPLAYER" && players[1] != null) {
+            if (isMultiplayer() && players[1] != null) {
                 players[1]?.show(batch)
             }
         } else {
@@ -222,8 +222,7 @@ class Game : ApplicationAdapter() {
 
     private fun setupLevel() {
         players[0] = Player(playerTexture)
-
-        if (mode == "MULTIPLAYER") {
+        if (isMultiplayer()) {
             players[1] = Player(playerTexture)
         }
 
@@ -256,7 +255,7 @@ class Game : ApplicationAdapter() {
         font.draw(batch, highestScore.toString(), (Gdx.graphics.width / 2).toFloat() - 24f, (Gdx.graphics.height - 54).toFloat())
 
         font.draw(batch, "SCORE<2>", (Gdx.graphics.width - 28).toFloat() - 96f, (Gdx.graphics.height - 24).toFloat())
-        if (mode == "MULTIPLAYER" || !isStarted) {
+        if (isMultiplayer() || !isStarted) {
             font.draw(batch, playerScores[1].toString(), (Gdx.graphics.width - 58).toFloat() - 32f, (Gdx.graphics.height - 54).toFloat())
         }
     }
@@ -277,7 +276,7 @@ class Game : ApplicationAdapter() {
             batch.draw(playerTexture, xLivesBegin + (i * 26) + (i * 4), textY, 26f, 0f)
         }
 
-        if (mode == "MULTIPLAYER") {
+        if (isMultiplayer()) {
             xLivesBegin = 190f
             font.draw(batch, playerLives[1].toString(), 170f, textY)
             for (i in 0 until if (playerLives[1] - 1 > 3) 3 else playerLives[1] - 1) {
@@ -323,7 +322,7 @@ class Game : ApplicationAdapter() {
             playerBullets[0][i] = null
         }
 
-        if (mode == "MULTIPLAYER") {
+        if (isMultiplayer()) {
             for (i in playerBullets[1].indices) {
                 playerBullets[1][i] = null
             }
@@ -364,7 +363,7 @@ class Game : ApplicationAdapter() {
         level++
         playerLives[0]++
 
-        if (mode == "MULTIPLAYER") {
+        if (isMultiplayer()) {
             playerLives[1]++
         }
 
@@ -402,8 +401,8 @@ class Game : ApplicationAdapter() {
         showSimplifiedFooter()
     }
 
-    private fun mode(): String {
-        return mode
+    private fun isMultiplayer(): Boolean {
+        return mode == "MULTIPLAYER"
     }
 
     @Throws(Exception::class)
@@ -437,7 +436,7 @@ class Game : ApplicationAdapter() {
     }
 
     private fun checkPlayerBullets() {
-        val max = if (mode == "MULTIPLAYER") 1 else 0
+        val max = if (isMultiplayer()) 1 else 0
 
         for (p in 0..max) {
             for (i in playerBullets[p].indices) {
@@ -516,7 +515,7 @@ class Game : ApplicationAdapter() {
                     }
                 }
 
-                val max = if (mode == "MULTIPLAYER") 1 else 0
+                val max = if (isMultiplayer()) 1 else 0
                 for (p in 0..max) {
                     if (players[p] != null) {
                         if (enemyBullets[i] != null && players[p]?.isHit(enemyBullets[i]!!) == true) {
@@ -575,7 +574,7 @@ class Game : ApplicationAdapter() {
                 shootEnemies(1)
             }
 
-            if (mode == "MULTIPLAYER") {
+            if (isMultiplayer()) {
                 if (player2Keys[0]) {
                     movePlayer(2, "LEFT")
                 } else if (player2Keys[1]) {
@@ -602,7 +601,7 @@ class Game : ApplicationAdapter() {
                 if (randomInvader != null) {
                     enemyBullets[i] = Bullet(
                         randomInvader.x() + 8,
-                        randomInvader.y() + 5,
+                        randomInvader.y() - 5,
                         "ENEMY",
                         enemyBulletImg,
                         enemyBulletImgFail,

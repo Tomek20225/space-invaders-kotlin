@@ -19,13 +19,7 @@ open class Invader(
     private var state: Int = 0
     private val pxDiff: Int = 2
 
-    init {
-        this.y = Gdx.graphics.height - y - h
-    }
-
     fun x(): Float = x.toFloat()
-
-    fun realX(): Float = realX
 
     fun y(): Float = y
 

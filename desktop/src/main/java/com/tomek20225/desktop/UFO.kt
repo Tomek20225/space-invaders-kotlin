@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Texture
 
 class UFO(
     img: Texture
-) : Invader(-50f, 86f, 48, 21, img, img, 200) {
+) : Invader(-50f, Gdx.graphics.height - 86f, 48, 21, img, img, 200) {
 
     fun isOutOfBounds(): Boolean {
         if (x() > Gdx.graphics.width) println("[Game] UFO flew away!")

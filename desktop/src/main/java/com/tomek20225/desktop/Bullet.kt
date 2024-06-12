@@ -22,8 +22,6 @@ class Bullet(
     init {
         if (this.type == "PLAYER") {
             this.x += 12
-        } else {
-            this.y = Gdx.graphics.height - y
         }
     }
 
