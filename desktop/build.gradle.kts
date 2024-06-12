@@ -5,8 +5,8 @@ plugins {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
 dependencies {
@@ -15,7 +15,7 @@ dependencies {
     implementation("com.badlogicgames.gdx:gdx-backend-lwjgl3:1.10.0")
     implementation("com.badlogicgames.gdx:gdx-platform:1.10.0:natives-desktop")
     implementation("com.badlogicgames.gdx:gdx-freetype:1.10.0")
-    implementation("com.badlogicgames.gdx:gdx-freetype-platform:1.10.0:natives-desktop")  // Add this line
+    implementation("com.badlogicgames.gdx:gdx-freetype-platform:1.10.0:natives-desktop")
 
     // LWJGL dependencies
     implementation("org.lwjgl:lwjgl:3.3.0")
@@ -51,8 +51,19 @@ sourceSets {
     }
 }
 
+application {
+    mainClass.set("com.tomek20225.desktop.MainKt")
+}
+
 tasks.withType<Jar> {
     manifest {
-        attributes["Main-Class"] = "MainKt"
+        attributes["Main-Class"] = "com.tomek20225.desktop.MainKt"
     }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+}
+
+tasks.register<Copy>("copyNatives") {
+    from(configurations.runtimeClasspath.get().filter { it.name.contains("natives") })
+    into("$buildDir/libs/natives")
 }
